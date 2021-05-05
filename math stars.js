@@ -1,4 +1,12 @@
-// STAR MATCH - Starting Template
+// STAR MATCH - V2
+
+//Number is N/A as a top level JS class for string to number
+//# keypad component extracted out
+const PlayNumber = props => ( 
+   <button className="number" onClick={() => console.log('Num', props.number)}>
+    {props.number}
+  </button>
+);
 
 const StarMatch = () => {
   const stars = utils.random(1, 9); 
@@ -18,7 +26,8 @@ const StarMatch = () => {
         </div>
         <div className="right">
           {utils.range(1, 9).map(number =>
-            <button className="number">{number}</button>
+           <PlayNumber key={number} number={number}/>
+          //PlayNumber keypad # is generated here
           //only 1 <button> needed to make all since
           //range of buttons from 1-9 are genarated with .map
           )}
@@ -67,3 +76,5 @@ const utils = {
     return sums[utils.random(0, sums.length - 1)];
   },
 };
+
+ReactDOM.render(<StarMatch />, mountNode);
