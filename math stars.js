@@ -45,7 +45,7 @@ const PlayAgain = props => (
 //based on the computed states.
 
 //#1 core app logic hooks
-const StarMatch = () => {
+const Game = (props) => {
   const [stars, setStars] = useState(utils.random(1, 9));
   //useState adds dynamic state for Nums arrays;
   const [availableNums, setAvailableNums] = useState(utils.range(1, 9));
@@ -118,7 +118,7 @@ const StarMatch = () => {
       <div className="body"> 
         <div className="left">
           {gameStatus !== 'active' ? (
-            <PlayAgain onClick={resetGame} gameStatus={gameStatus} />
+            <PlayAgain onClick={props.startNewGame} gameStatus={gameStatus} />
           ) : ( //SD now in logic to check gID & <PA/>
             <StarsDisplay count={stars}/>
           )}
@@ -142,6 +142,10 @@ const StarMatch = () => {
   );
 };
 
+const StarMatch = () => {
+  const [gameId, setGameId] = useState(1);
+  return <Game key={gameId} startNewGame={() => setGameId(gameId + 1)}/>;
+};
 // Color Theme
 const colors = {
   available: 'lightgray',
