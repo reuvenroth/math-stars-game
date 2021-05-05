@@ -60,7 +60,7 @@ const StarMatch = () => {
       const newAvailableNums = availableNums.filter(
         n => !newCandidateNums.includes(n)
       );
-      // redraw stars
+      setStars(utils.randomSumIn(newAvailableNums, 9))
       setAvailableNums(newAvailableNums);
       setCandidateNums([]);
     }
@@ -78,12 +78,7 @@ const StarMatch = () => {
         <div className="right">
           {utils.range(1, 9).map(number =>
            <PlayNumber 
-             key={number} 
-             //availableNums, candidateNums, etc would work,
-             //though it's TMI for a single PlayNumber since
-             //it only cares about itself instead of all numbers
-             //isUsed, isCandidate also works as booleans, yet
-             //multiple values not preferred. 1 value status={} is best 
+             key={number}
              status={numberStatus(number)}
              number={number}
              onClick={onNumberClick}
