@@ -29,9 +29,9 @@ const PlayNumber = props => (
 
 const StarMatch = () => {
   const [stars, setStars] = useState(utils.random(1, 9));
-  //useState adds dynamic state for Nums array; temp values for feature testing
-  const [availableNums, setAvailableNums] = useState([1, 2, 3, 4, 5]);
-  const [candidateNums, setCandidateNums] = useState([2, 3]);
+  //useState adds dynamic state for Nums arrays;
+  const [availableNums, setAvailableNums] = useState(utils.range(1, 9));
+  const [candidateNums, setCandidateNums] = useState([]);
   
   const candidatesAreWrong = utils.sum(candidateNums) > stars;
   //cAW checks if amount of candidateNums is more than the stars
