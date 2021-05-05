@@ -18,14 +18,34 @@ const StarsDisplay = props => (
 //# keypad component extracted out
 //onClick temporarily does console.log
 const PlayNumber = props => ( 
-   <button className="number" onClick={() => console.log('Num', props.number)}>
+   <button 
+     className="number" 
+     style={{ backgroundColor: colors[props.status] }}
+     onClick={() => console.log('Num', props.number)}
+   >
     {props.number}
   </button>
 );
 
 const StarMatch = () => {
-  const stars = utils.random(1, 9); 
-  //Non-fixed # of stars bet. 1-9; Dynamic state needed
+  const [stars, setStars] = useState(utils.random(1, 9));
+  //useState adds dynamic state for Nums array; temp values for feature testing
+  const [availableNums, setAvailableNums] = useState([1, 2, 3, 4, 5]);
+  const [candidateNums, setCandidateNums] = useState([2, 3]);
+  
+  const candidatesAreWrong = utils.sum(candidateNums) > stars;
+  //cAW checks if amount of candidateNums is more than the stars
+  //color style: if avaNums is false then 'used' is returned
+  //otherwise cAW is checked to return 'wrong' or 'candidate'
+  //(debug error log) every const needs initializing with =
+  const numberStatus = (number) => {
+    if (!availableNums.includes(number)) {
+      return 'used';
+    }
+    if (candidateNums.includes(number)) {
+      return candidatesAreWrong ? 'wrong': 'candidate';
+    }
+  };
   return (
     <div className="game">
       <div className="help">
@@ -33,16 +53,24 @@ const StarMatch = () => {
       </div> 
       <div className="body"> 
         <div className="left">
-         <StarsDisplay count={stars}/>
+          <StarsDisplay count={stars}/>
         </div>
         <div className="right">
           {utils.range(1, 9).map(number =>
-           <PlayNumber key={number} number={number}/>
+           <PlayNumber 
+             key={number} 
+             //availableNums, candidateNums, etc would work,
+             //though it's TMI for a single PlayNumber since
+             //it only cares about itself instead of all numbers
+             //isUsed, isCandidate also works as booleans, yet
+             //multiple values not preferred. 1 value status={} is best 
+             status={numberStatus(number)}
+             number={number}
+          />
           //PlayNumber keypad # is generated here
           //only 1 <button> needed to make all since
           //range of buttons from 1-9 are genarated with .map
           )}
-          
         </div>
       </div>
       <div className="timer">Time Remaining: 10</div>
