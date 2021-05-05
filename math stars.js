@@ -21,7 +21,7 @@ const PlayNumber = props => (
    <button 
      className="number" 
      style={{ backgroundColor: colors[props.status] }}
-     onClick={() => console.log('Num', props.number)}
+     onClick={() => props.onClick(props.number, props.status)}
    >
     {props.number}
   </button>
@@ -45,7 +45,27 @@ const StarMatch = () => {
     if (candidateNums.includes(number)) {
       return candidatesAreWrong ? 'wrong': 'candidate';
     }
+    return 'available';
   };
+  
+  const onNumberClick = (number, currentStatus) => {
+    if(currentStatus == 'used') {
+      return;
+    }
+    //candidateNums
+    const newCandidateNums = candidateNums.concat(number);
+    if (utils.sum(newCandidateNums) !== stars) {
+      setCandidateNums(newCandidateNums);
+    } else {
+      const newAvailableNums = availableNums.filter(
+        n => !newCandidateNums.includes(n)
+      );
+      // redraw stars
+      setAvailableNums(newAvailableNums);
+      setCandidateNums([]);
+    }
+  }
+  
   return (
     <div className="game">
       <div className="help">
@@ -66,6 +86,7 @@ const StarMatch = () => {
              //multiple values not preferred. 1 value status={} is best 
              status={numberStatus(number)}
              number={number}
+             onClick={onNumberClick}
           />
           //PlayNumber keypad # is generated here
           //only 1 <button> needed to make all since
