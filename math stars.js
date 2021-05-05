@@ -1,4 +1,4 @@
-// STAR MATCH - V2
+// STAR MATCH
 
 //star display component extracted,
 //replaced in React.fragment with StarsDisplay & props.count
@@ -29,6 +29,12 @@ const PlayNumber = props => (
 
 const PlayAgain = props => (
   <div className="game-done">
+    <div 
+      className="message"
+      style={{ color: props.gameStatus === 'lost' ? 'red' : 'green'}}
+    >
+      {props.gameStatus === 'lost' ? 'Game Over' : 'Success!'}
+    </div>
     <button onClick={props.onClick}>Play Again</button>
   </div>
 );
@@ -44,14 +50,28 @@ const StarMatch = () => {
   //useState adds dynamic state for Nums arrays;
   const [availableNums, setAvailableNums] = useState(utils.range(1, 9));
   const [candidateNums, setCandidateNums] = useState([]);
+  const [secondsLeft, setSecondsLeft] = useState(10);
+  // setInterval, setTimeout
+  useEffect(() => {
+    if (secondsLeft > 0 && availableNums.length > 0) {
+      const timerId = setTimeout(() => {
+        setSecondsLeft(secondsLeft - 1);
+      }, 1000);
+      return () => clearTimeout(timerId);
+    }
+  });
  
   //#2 computations on state
   const candidatesAreWrong = utils.sum(candidateNums) > stars;
   //cAW checks if amount of candidateNums is more than the stars
   //color style: if avaNums is false then 'used' is returned
   //otherwise cAW is checked to return 'wrong' or 'candidate'
-  const gameIsDone = availableNums.length === 0;
-  
+  // const gameIsWon = availableNums.length === 0;
+  // const gameIsLost = secondsLeft === 0
+  // Nested ternary covers both variables & states
+  const gameStatus = availableNums.length === 0
+    ? 'won'
+    : secondsLeft === 0 ? 'lost' : 'active'
   const resetGame = () => {
     setStars(utils.random(1, 9));
     setAvailableNums(utils.range(1, 9));
@@ -69,7 +89,7 @@ const StarMatch = () => {
   };
   
   const onNumberClick = (number, currentStatus) => {
-    if(currentStatus == 'used') {
+    if(gameStatus !== 'active' || currentStatus == 'used') {
       return;
     }
     const newCandidateNums =
@@ -97,8 +117,8 @@ const StarMatch = () => {
       </div> 
       <div className="body"> 
         <div className="left">
-          {gameIsDone ?(
-            <PlayAgain onClick={resetGame} />
+          {gameStatus !== 'active' ? (
+            <PlayAgain onClick={resetGame} gameStatus={gameStatus} />
           ) : ( //SD now in logic to check gID & <PA/>
             <StarsDisplay count={stars}/>
           )}
@@ -117,7 +137,7 @@ const StarMatch = () => {
           )}
         </div>
       </div>
-      <div className="timer">Time Remaining: 10</div>
+      <div className="timer">Time Remaining: {secondsLeft}</div>
     </div>
   );
 };
