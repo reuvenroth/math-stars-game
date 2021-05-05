@@ -27,17 +27,37 @@ const PlayNumber = props => (
   </button>
 );
 
+const PlayAgain = props => (
+  <div className="game-done">
+    <button onClick={props.onClick}>Play Again</button>
+  </div>
+);
+
+//all hooks and side effect/state hooks are first
+//and then computations on that state
+//as core app logic. Only later is the UI display
+//based on the computed states.
+
+//#1 core app logic hooks
 const StarMatch = () => {
   const [stars, setStars] = useState(utils.random(1, 9));
   //useState adds dynamic state for Nums arrays;
   const [availableNums, setAvailableNums] = useState(utils.range(1, 9));
   const [candidateNums, setCandidateNums] = useState([]);
-  
+ 
+  //#2 computations on state
   const candidatesAreWrong = utils.sum(candidateNums) > stars;
   //cAW checks if amount of candidateNums is more than the stars
   //color style: if avaNums is false then 'used' is returned
   //otherwise cAW is checked to return 'wrong' or 'candidate'
-  //(debug error log) every const needs initializing with =
+  const gameIsDone = availableNums.length === 0;
+  
+  const resetGame = () => {
+    setStars(utils.random(1, 9));
+    setAvailableNums(utils.range(1, 9));
+    setCandidateNums([]);
+  };
+  
   const numberStatus = (number) => {
     if (!availableNums.includes(number)) {
       return 'used';
@@ -69,6 +89,7 @@ const StarMatch = () => {
     }
   }
   
+  //#3 UI description based on states/computations
   return (
     <div className="game">
       <div className="help">
@@ -76,7 +97,11 @@ const StarMatch = () => {
       </div> 
       <div className="body"> 
         <div className="left">
-          <StarsDisplay count={stars}/>
+          {gameIsDone ?(
+            <PlayAgain onClick={resetGame} />
+          ) : ( //SD now in logic to check gID & <PA/>
+            <StarsDisplay count={stars}/>
+          )}
         </div>
         <div className="right">
           {utils.range(1, 9).map(number =>
