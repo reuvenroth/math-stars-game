@@ -1,7 +1,22 @@
 // STAR MATCH - V2
 
-//Number is N/A as a top level JS class for string to number
+//star display component extracted,
+//replaced in React.fragment with StarsDisplay & props.count
+const StarsDisplay = props => (
+   <>
+     {utils.range(1, props.count).map(starId =>
+            <div key={starId} className="star" />
+            //all but 1 star <div> are removed because
+            //utils.range generates bet. 1 & 'stars' amount.random
+          )}
+   </>
+);
+
+//Number is N/A as a top level JS class for string to number,
+//PlayNumber used instead
+
 //# keypad component extracted out
+//onClick temporarily does console.log
 const PlayNumber = props => ( 
    <button className="number" onClick={() => console.log('Num', props.number)}>
     {props.number}
@@ -18,11 +33,7 @@ const StarMatch = () => {
       </div> 
       <div className="body"> 
         <div className="left">
-          {utils.range(1, stars).map(starId =>
-            <div key={starId} className="star" />
-            //all but 1 star <div> are removed because
-            //utils.range generates bet. 1 & 'stars' amount.random
-          )}
+         <StarsDisplay count={stars}/>
         </div>
         <div className="right">
           {utils.range(1, 9).map(number =>
